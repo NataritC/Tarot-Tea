@@ -17,7 +17,7 @@ The app must explain all of this to users in a **"How Tarot Works"** guide (and 
 | 5 | Five-Card Cross | 1 Present · 2 Past · 3 Future · 4 Root cause · 5 Potential |
 | 6 | Relationship | 1 You · 2 Them · 3 Your connection · 4 Strengths · 5 Challenges · 6 Where it's heading |
 | 7 | Horseshoe | 1 Past · 2 Present · 3 Hidden influences · 4 Obstacles · 5 People around you · 6 Advice · 7 Outcome |
-| 8 | (No single standard; pick one, possibly the owner's friend's favorite) | TBD |
+| 8 | The Moon Cycle (Noctis original) | 1 New Moon · 2 Waxing Crescent · 3 First Quarter · 4 Waxing Gibbous · 5 Full Moon · 6 Waning Gibbous · 7 Last Quarter · 8 Waning Crescent |
 | 10 | Celtic Cross | 1 Present · 2 Challenge (crosses it) · 3 Foundation / root · 4 Recent past · 5 Conscious goal / best outcome · 6 Near future · 7 Self · 8 Environment / others · 9 Hopes & fears · 10 Final outcome |
 | any | Custom spread | User names their own positions |
 
@@ -35,6 +35,16 @@ The app must explain all of this to users in a **"How Tarot Works"** guide (and 
 ## Later / optional
 - AI-written whole-spread interpretation via the Claude API. Needs a small backend and a secret API key; **never commit keys** (this repo is public; use `.env`, gitignored).
 
-## Open decisions
-- Style: cozy "Tarot & Tea" (cream, terracotta, gold, teacups) vs dark mystical (purple, gold, stars).
-- Platform: responsive website (recommended) vs native phone app.
+## Decisions
+- Deck: **Noctis Tarot** (owner's deck). Style follows the deck: black, crimson and gold; Cinzel + Cormorant Garamond.
+- Platform: responsive website (React + Vite), deployable on Vercel.
+- Readings: built-in engine (`src/lib/interpret.js`) works offline: per-position meanings, question topic (love/work/money), yes/no leaning, patterns (Major count, dominant suit, reversals) and advice.
+- AI readings: `api/interpret.js` serverless function calls Claude; enabled only when `ANTHROPIC_API_KEY` is set on the server.
+- Reversal chance: 35% per card. Journal and daily card are stored in localStorage.
+
+## Known deck art issues (to fix in the artwork)
+- "THE HIGH PRIESTSS" typo (should be PRIESTESS).
+- Every Cups label renders the suit as "©CUPS"/"CCUPS"; Knight of Cups is labelled "KNIGHT of WANPS".
+- Wrong suit symbols: Page of Swords and Queen of Swords hold cups; King of Wands holds a sword; Six of Pentacles shows a goblet instead of coins.
+- Missing or wrong counts: Two, Three and Four of Cups show no cups; Five of Cups shows two spilled cups (traditionally 3 spilled + 2 standing); Eight of Pentacles shows 4 coins.
+- Card images in the app are cropped from the overview poster (low-res); replace with full-size exports.
