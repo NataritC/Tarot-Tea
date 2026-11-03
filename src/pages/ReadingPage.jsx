@@ -5,6 +5,8 @@ import { loadJournal, saveJournal, loadSettings, saveSettings } from '../lib/sto
 import SpreadLayout from '../components/SpreadLayout.jsx';
 import ReadingResult from '../components/ReadingResult.jsx';
 import TarotCard from '../components/TarotCard.jsx';
+import NextSteps from '../components/NextSteps.jsx';
+import { interpret } from '../lib/interpret.js';
 
 const QUESTION_IDEAS = [
   'What do I need to know about my love life right now?',
@@ -23,6 +25,7 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
   const [picked, setPicked] = useState([]); // indexes into deck, in draw order
   const [revealed, setRevealed] = useState([]);
   const [savedId, setSavedId] = useState(null);
+  const [followUps, setFollowUps] = useState([]); // [{ question, card, reversed, deckIndex, ai }]
   const aiText = useRef(null);
   const fanRef = useRef(null);
   const spread = spreadId && getSpread(spreadId);
@@ -39,7 +42,7 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
 
   function startShuffle() {
     setDeck(shuffleDeck(settings.reversals));
-    setPicked([]); setRevealed([]); setSavedId(null); aiText.current = null;
+    setPicked([]); setRevealed([]); setSavedId(null); setFollowUps([]); aiText.current = null;
     setStep('shuffle');
     setTimeout(() => setStep('pick'), 2200);
   }
@@ -66,6 +69,25 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
   const slots = drawn.map((d, i) => ({ ...d, revealed: revealed.includes(i) }));
   const allRevealed = spread && revealed.length === spread.count;
 
+  // The next unused card in the shuffled deck becomes the clarifier for a follow-up.
+  const nextCard = useMemo(() => {
+    const used = new Set([...picked, ...followUps.map((f) => f.deckIndex)]);
+    const i = deck.findIndex((_, idx) => !used.has(idx));
+    return i === -1 ? null : { ...deck[i], deckIndex: i };
+  }, [deck, picked, followUps]);
+
+  const followUpsForJournal = (list) => list.map((f) => ({ question: f.question, id: f.card.id, reversed: f.reversed, ai: f.ai || null }));
+
+  // Keep a saved journal entry in sync when follow-ups are added after saving.
+  useEffect(() => {
+    if (!savedId) return;
+    const entries = loadJournal();
+    const next = entries.map((e) => (e.id === savedId ? { ...e, followUps: followUpsForJournal(followUps) } : e));
+    saveJournal(next);
+  }, [followUps, savedId]);
+
+  const newReading = () => { setQuestion(''); setFollowUps([]); setStep('spread'); };
+
   function save(note, ai) {
     const entry = {
       id: Date.now().toString(36),
@@ -73,8 +95,9 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
       question: question.trim(),
       spreadId,
       cards: drawn.map((d) => ({ id: d.card.id, reversed: d.reversed })),
-      note: note.trim(),
+      note: (note || '').trim(),
       ai: ai || aiText.current,
+      followUps: followUpsForJournal(followUps),
     };
     saveJournal([entry, ...loadJournal()]);
     setSavedId(entry.id);
@@ -161,6 +184,38 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
     );
   }
 
+  // ---------- Step: reading ended ----------
+  if (step === 'ended') {
+    const result = interpret({ question: question.trim(), spread, drawn });
+    return (
+      <div className="page narrow fade-up ending">
+        <header className="page-head">
+          <p className="eyebrow">{spread.name} · Reading complete</p>
+          <h1>Your Reading Is Complete</h1>
+          {question && <p className="reading-question">“{question}”</p>}
+        </header>
+        <div className="table-felt ending-table">
+          <SpreadLayout spread={spread} slots={drawn.map((d) => ({ ...d, revealed: true }))} maxVh={40} />
+        </div>
+        <div className="ending-message">
+          <p className="eyebrow">Your key message</p>
+          {result.answer && <p className="ending-verdict">{result.answer.verdict}: {result.answer.text}</p>}
+          <p>{result.mood}</p>
+          <p className="ending-advice">{result.advice[0]}</p>
+          {followUps.length > 0 && <p className="muted small">With {followUps.length} follow-up {followUps.length === 1 ? 'question' : 'questions'} answered by clarifier cards.</p>}
+        </div>
+        <p className="ending-blessing">✦ Take what resonates, leave what does not. Your choices shape what comes next. ✦</p>
+        <div className="actions center-actions">
+          {savedId
+            ? <button className="btn" onClick={() => navigate('journal')}>Open Journal</button>
+            : <button className="btn" onClick={() => save('', null)}>Save to Journal</button>}
+          <button className="btn btn-gold" onClick={newReading}>New Reading</button>
+          <button className="btn btn-ghost" onClick={() => navigate('home')}>Home</button>
+        </div>
+      </div>
+    );
+  }
+
   // ---------- Steps: pick + reveal + reading ----------
   const nextPos = spread.positions[picked.length];
   return (
@@ -240,10 +295,17 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
       )}
 
       {allRevealed && (
-        <div className="actions center-actions">
-          <button className="btn btn-ghost" onClick={() => { setQuestion(''); setStep('spread'); }}>New Reading</button>
-          {savedId && <button className="btn" onClick={() => navigate('journal')}>Open Journal</button>}
-        </div>
+        <NextSteps
+          question={question.trim()}
+          spread={spread}
+          drawn={drawn}
+          nextCard={nextCard}
+          followUps={followUps}
+          setFollowUps={setFollowUps}
+          aiAvailable={aiAvailable}
+          onEnd={() => setStep('ended')}
+          onNew={newReading}
+        />
       )}
     </div>
   );

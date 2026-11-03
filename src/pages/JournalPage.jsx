@@ -5,6 +5,7 @@ import { byId } from '../lib/deck.js';
 import { cardImage } from '../data/cards.js';
 import ReadingResult from '../components/ReadingResult.jsx';
 import SpreadLayout from '../components/SpreadLayout.jsx';
+import { FollowUpItem } from '../components/NextSteps.jsx';
 
 export default function JournalPage({ aiAvailable, navigate }) {
   const [entries, setEntries] = useState(loadJournal);
@@ -32,6 +33,17 @@ export default function JournalPage({ aiAvailable, navigate }) {
         </div>
         {open.note && <blockquote className="journal-note">{open.note}</blockquote>}
         <ReadingResult question={open.question} spread={spread} drawn={drawn} aiAvailable={aiAvailable} savedAi={open.ai} />
+        {open.followUps?.length > 0 && (
+          <section className="next-steps">
+            <h3 className="section-title">Follow-up Questions</h3>
+            <ol className="followups">
+              {open.followUps.map((f, i) => (
+                <FollowUpItem key={i} index={i} question={open.question} drawn={drawn}
+                  item={{ question: f.question, card: byId[f.id], reversed: f.reversed, ai: f.ai }} />
+              ))}
+            </ol>
+          </section>
+        )}
         <div className="actions center-actions">
           <button className="btn btn-danger" onClick={() => remove(open.id)}>Delete reading</button>
         </div>

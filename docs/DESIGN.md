@@ -28,9 +28,10 @@ The app must explain all of this to users in a **"How Tarot Works"** guide (and 
 4. **Choose cards**: all 78 cards fanned face-down; tap the ones that call to you. Each flies to its numbered spot with the position name glowing beneath it.
 5. **Reveal**: tap to flip (3D flip animation); some cards come out reversed.
 6. **Interpretation**: each card's meaning *for that position* (upright/reversed), plus an overall summary.
-7. **Journal**: save readings with question, date and notes.
-8. **Card library**: browse all 78 cards (22 Major + 56 Minor Arcana) and their meanings.
-9. **How Tarot Works**: guide explaining spreads, positions, draw order, reversals, Major vs Minor Arcana and suits.
+7. **What next?** After a reading: **Ask a follow-up** (draw a *clarifier card* from the remaining deck, read for the follow-up question and linked to the spread; up to 3 per reading; the AI also answers when enabled), **End the reading** (closing screen with the key message), or **New reading**.
+8. **Journal**: save readings with question, date, notes and follow-ups.
+9. **Card library**: browse all 78 cards (22 Major + 56 Minor Arcana) and their meanings.
+10. **How Tarot Works**: guide explaining spreads, positions, draw order, reversals, Major vs Minor Arcana and suits.
 
 ## Later / optional
 - AI-written whole-spread interpretation via the Claude API. Needs a small backend and a secret API key; **never commit keys** (this repo is public; use `.env`, gitignored).

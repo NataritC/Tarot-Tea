@@ -102,3 +102,48 @@ export function interpret({ question, spread, drawn }) {
 
   return { topic, yesNo, answer, cards, themes, mood, advice };
 }
+
+// A clarifier is one extra card drawn to answer a follow-up question about a reading.
+export function interpretClarifier({ question, followUp, card, reversed, drawn }) {
+  const topic = detectTopic(followUp) || detectTopic(question);
+  const tone = effectiveTone({ card, reversed });
+  const outcome = drawn.find((d) => d.position.role === 'outcome') || drawn[drawn.length - 1];
+  const oTone = effectiveTone(outcome);
+  const outcomeName = `${outcome.card.name}${outcome.reversed ? ' reversed' : ''}`;
+
+  let relation;
+  if (tone >= 1 && oTone >= 0.5) relation = `It supports your outcome card, ${outcomeName}. The path ahead looks good, and this card shows how to make the most of it.`;
+  else if (tone >= 1) relation = `It brings light to the harder parts of your spread. Even with ${outcomeName} as the outcome, this card shows a way through.`;
+  else if (tone <= -1 && oTone >= 0.5) relation = `It adds a caution to an otherwise hopeful spread. Watch for this energy so it does not undo the promise of ${outcomeName}.`;
+  else if (tone <= -1) relation = `It confirms the challenges already shown in your spread. Facing them honestly is the way forward.`;
+  else relation = `It is a practical, in-between card: the answer depends on how you act on it, more than on luck.`;
+
+  let echo = null;
+  const sameSuit = card.suit ? drawn.filter((d) => d.card.suit === card.suit) : [];
+  if (sameSuit.length) {
+    echo = `It shares the suit of ${sameSuit.map((d) => d.card.name).join(', ')} in your spread, so ${SUITS[card.suit].theme} is the thread to follow.`;
+  } else if (card.arcana === 'major' && drawn.some((d) => d.card.arcana === 'major')) {
+    echo = 'Another Major Arcana card: this follow-up touches a big life lesson, not a passing moment.';
+  }
+
+  let topicLine = null;
+  if (topic) {
+    topicLine = reversed
+      ? `For ${TOPIC_LABEL[topic]}: the usual promise of this card ("${card.topics[topic].replace(/\.$/, '')}") is blocked or delayed for now.`
+      : `For ${TOPIC_LABEL[topic]}: ${card.topics[topic]}`;
+  }
+
+  let answer = null;
+  if (isYesNo(followUp)) {
+    if (tone >= 1) answer = { verdict: 'Yes', text: 'The clarifier leans toward yes.' };
+    else if (tone <= -0.5) answer = { verdict: 'No', text: 'The clarifier leans toward no, or not yet.' };
+    else answer = { verdict: 'Maybe', text: 'The clarifier says it depends on your next steps.' };
+  }
+
+  return {
+    keywords: reversed ? card.keywords.reversed : card.keywords.upright,
+    meaning: reversed ? card.reversed : card.upright,
+    relation, echo, topicLine, answer,
+    advice: card.advice,
+  };
+}
