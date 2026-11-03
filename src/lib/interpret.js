@@ -147,3 +147,35 @@ export function interpretClarifier({ question, followUp, card, reversed, drawn }
     advice: card.advice,
   };
 }
+
+// A short narrative that retells the whole reading in draw order, plus a one-line takeaway.
+export function summarize({ question, drawn, result }) {
+  const list = (words) => (words.length > 1 ? `${words.slice(0, -1).join(', ')} and ${words[words.length - 1]}` : words[0]);
+  const name = (d) => `${d.card.name}${d.reversed ? ' reversed' : ''}`;
+  const kws = (d) => list((d.reversed ? d.card.keywords.reversed : d.card.keywords.upright).slice(0, 2));
+  const n = drawn.length;
+
+  let story;
+  if (n === 1) {
+    story = `Your card is ${name(drawn[0])}, which speaks of ${kws(drawn[0])}.`;
+  } else {
+    story = drawn.map((d, i) => {
+      const pos = `the ${d.position.name.replace(/^The /, '')} position`;
+      if (i === 0) return `The story begins with ${name(d)} in ${pos}, bringing ${kws(d)}.`;
+      if (i === n - 1) return `Finally, ${name(d)} in ${pos} points to ${kws(d)}.`;
+      const lead = ['Then', 'Next', 'After that', 'Alongside this'][(i - 1) % 4];
+      return `${lead}, ${name(d)} in ${pos} adds ${kws(d)}.`;
+    }).join(' ');
+  }
+
+  const parts = [];
+  if (result.answer) parts.push(`To your question${question ? ` “${question}”` : ''}, the answer leans ${result.answer.verdict.toLowerCase()}.`);
+  const mood = result.mood.replace(/^Overall, /, '');
+  parts.push(mood.charAt(0).toUpperCase() + mood.slice(1));
+  const majors = drawn.filter((d) => d.card.arcana === 'major').length;
+  const rev = drawn.filter((d) => d.reversed).length;
+  if (n > 1 && majors >= Math.ceil(n / 2)) parts.push('Fate is playing a big part here.');
+  if (n > 1 && rev >= Math.ceil(n / 2)) parts.push('Much of the energy is blocked for now, so inner work comes first.');
+
+  return { story, takeaway: parts.join(' ') };
+}

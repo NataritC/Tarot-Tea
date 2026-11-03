@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { interpret } from '../lib/interpret.js';
+import { interpret, summarize } from '../lib/interpret.js';
 import { renderMarkdown } from '../lib/markdown.js';
 import { cardImage } from '../data/cards.js';
 import CardModal from './CardModal.jsx';
@@ -7,6 +7,7 @@ import CardModal from './CardModal.jsx';
 // Shows the full reading for a completed spread.
 export default function ReadingResult({ question, spread, drawn, aiAvailable, savedAi, onSave, saved, onAiText }) {
   const result = useMemo(() => interpret({ question, spread, drawn }), [question, spread, drawn]);
+  const summary = useMemo(() => summarize({ question, drawn, result }), [question, drawn, result]);
   const [detail, setDetail] = useState(null);
   const [ai, setAi] = useState({ status: savedAi ? 'done' : 'idle', text: savedAi || '' });
   const [note, setNote] = useState('');
@@ -69,6 +70,12 @@ export default function ReadingResult({ question, spread, drawn, aiAvailable, sa
           <ul className="themes">{result.themes.map((t) => <li key={t}>{t}</li>)}</ul>
         </>
       )}
+
+      <h3 className="section-title">Summary of Your Reading</h3>
+      <div className="summary-box">
+        <p className="summary-story">{summary.story}</p>
+        <p className="summary-takeaway"><span className="eyebrow">In short</span>{summary.takeaway}</p>
+      </div>
 
       <h3 className="section-title">Your Advice</h3>
       <div className="advice-box">{result.advice.map((a) => <p key={a}>{a}</p>)}</div>

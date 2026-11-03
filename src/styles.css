@@ -436,3 +436,9 @@ button.tcard { cursor: pointer; }
 .hero-logo { display: block; margin: 0 auto 10px; filter: drop-shadow(0 0 24px rgba(232, 207, 143, 0.28)); animation: floatLogo 6s ease-in-out infinite; }
 @keyframes floatLogo { 50% { transform: translateY(-6px); } }
 @media (max-width: 640px) { .hero-logo { height: 96px !important; } .brand .logo { height: 26px !important; } }
+
+/* ---------- Reading summary ---------- */
+.summary-box { padding: 20px 22px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--panel); }
+.summary-story { font-size: 1.1rem; line-height: 1.65; }
+.summary-takeaway { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); font-style: italic; color: var(--gold-hi); }
+.summary-takeaway .eyebrow { display: block; font-style: normal; margin-bottom: 4px; }
