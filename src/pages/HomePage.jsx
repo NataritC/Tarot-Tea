@@ -5,6 +5,7 @@ import { byId, REVERSAL_CHANCE } from '../lib/deck.js';
 import { loadDaily, saveDaily } from '../lib/storage.js';
 import TarotCard from '../components/TarotCard.jsx';
 import CardModal from '../components/CardModal.jsx';
+import Logo from '../components/Logo.jsx';
 
 const today = () => new Date().toLocaleDateString('en-CA');
 
@@ -30,6 +31,7 @@ export default function HomePage({ navigate }) {
   return (
     <div className="page fade-up">
       <section className="hero">
+        <Logo size={120} className="hero-logo" />
         <p className="eyebrow">The Noctis Tarot</p>
         <h1 className="hero-title">Tarot <span className="amp">&amp;</span> Tea</h1>
         <p className="lead">Pour a cup, quiet your mind, and ask the cards. Choose a spread, draw your cards in order, and receive a reading made for your question.</p>

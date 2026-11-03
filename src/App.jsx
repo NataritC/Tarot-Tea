@@ -4,6 +4,7 @@ import ReadingPage from './pages/ReadingPage.jsx';
 import LibraryPage from './pages/LibraryPage.jsx';
 import JournalPage from './pages/JournalPage.jsx';
 import LearnPage from './pages/LearnPage.jsx';
+import Logo from './components/Logo.jsx';
 
 const NAV = [['home', 'Home'], ['read', 'Read'], ['learn', 'Learn'], ['library', 'Cards'], ['journal', 'Journal']];
 
@@ -61,7 +62,7 @@ export default function App() {
     <div className="app">
       <div className="stars" aria-hidden="true" />
       <nav className="nav">
-        <button className="brand" onClick={() => navigate('home')}>Tarot <span className="amp">&amp;</span> Tea</button>
+        <button className="brand" onClick={() => navigate('home')} aria-label="Tarot & Tea home"><Logo size={30} /><span>Tarot <span className="amp">&amp;</span> Tea</span></button>
         <div className="nav-links">
           {NAV.map(([k, label]) => (
             <button key={k} className={`nav-link ${route.page === k ? 'is-on' : ''}`} onClick={() => navigate(k)} aria-current={route.page === k ? 'page' : undefined}>

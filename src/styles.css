@@ -68,7 +68,7 @@ main { flex: 1; }
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--line);
 }
-.brand { font-family: var(--display); font-size: 1.15rem; color: var(--gold-hi); letter-spacing: 0.08em; white-space: nowrap; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 1.15rem; color: var(--gold-hi); letter-spacing: 0.08em; white-space: nowrap; }
 .amp { font-family: var(--body); font-style: italic; color: var(--crimson-hi); }
 .nav-links { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
 .nav-link { font-family: var(--display); font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 10px; color: var(--muted); border-radius: 8px; white-space: nowrap; }
@@ -430,3 +430,9 @@ button.tcard { cursor: pointer; }
 .ending-blessing { text-align: center; color: var(--gold); font-family: var(--display); font-size: 0.8rem; letter-spacing: 0.15em; margin: 22px 0 0; }
 @media (hover: hover) and (pointer: fine) { .next-option:hover:not(:disabled) { border-color: var(--gold); transform: translateY(-2px); } }
 @media (max-width: 760px) { .next-options { grid-template-columns: 1fr; } .next-panel { padding: 18px 14px; } }
+
+/* ---------- Logo ---------- */
+.logo { display: inline-block; flex: none; }
+.hero-logo { display: block; margin: 0 auto 10px; filter: drop-shadow(0 0 24px rgba(232, 207, 143, 0.28)); animation: floatLogo 6s ease-in-out infinite; }
+@keyframes floatLogo { 50% { transform: translateY(-6px); } }
+@media (max-width: 640px) { .hero-logo { height: 96px !important; } .brand .logo { height: 26px !important; } }

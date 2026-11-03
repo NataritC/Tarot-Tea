@@ -37,6 +37,7 @@ The app must explain all of this to users in a **"How Tarot Works"** guide (and 
 - AI-written whole-spread interpretation via the Claude API. Needs a small backend and a secret API key; **never commit keys** (this repo is public; use `.env`, gitignored).
 
 ## Decisions
+- Logo: **Moon Steep** (teacup whose steam becomes a crescent moon), `public/brand/logo.svg`; favicon `public/brand/favicon.svg`; app icons `public/icon-*.png`, `public/apple-touch-icon.png`.
 - Deck: **Noctis Tarot** (owner's deck). Style follows the deck: black, crimson and gold; Cinzel + Cormorant Garamond.
 - Platform: responsive website (React + Vite). Hosting: Cloudflare Pages (primary, `functions/api/interpret.js`) or Vercel (`api/interpret.js`); both adapters call `server/reader.js`.
 - Readings: built-in engine (`src/lib/interpret.js`) works offline: per-position meanings, question topic (love/work/money), yes/no leaning, patterns (Major count, dominant suit, reversals) and advice.
