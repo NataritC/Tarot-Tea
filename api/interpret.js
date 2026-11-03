@@ -49,7 +49,7 @@ ${lines.join('\n')}`;
     });
 
     if (message.stop_reason === 'refusal') {
-      return res.status(422).json({ error: 'The oracle could not answer this question. Try rephrasing it.' });
+      return res.status(422).json({ error: 'The tarot reader could not answer this question. Try rephrasing it.' });
     }
     const text = message.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
     return res.status(200).json({ text });
@@ -59,7 +59,7 @@ ${lines.join('\n')}`;
     }
     if (err instanceof Anthropic.APIError) {
       console.error('Anthropic API error', err.status, err.message);
-      return res.status(502).json({ error: 'The oracle is unavailable right now.' });
+      return res.status(502).json({ error: 'Deep readings are unavailable right now.' });
     }
     console.error(err);
     return res.status(500).json({ error: 'Something went wrong.' });

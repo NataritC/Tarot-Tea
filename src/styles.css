@@ -237,10 +237,10 @@ button.tcard { cursor: pointer; }
 .themes li { margin-bottom: 8px; }
 .advice-box { padding: 18px 22px; border-radius: var(--radius); background: linear-gradient(135deg, rgba(201, 169, 97, 0.12), rgba(138, 28, 28, 0.12)); border: 1px solid var(--line); }
 .advice-box p:last-child { margin: 0; }
-.oracle { margin-top: 12px; }
+.deep-reading { margin-top: 12px; }
 .ai-text { padding: 6px 4px; }
 .ai-text h3, .ai-text h4 { margin-top: 1.2em; }
-.oracle-loading { display: flex; align-items: center; gap: 12px; color: var(--gold); font-style: italic; }
+.deep-loading { display: flex; align-items: center; gap: 12px; color: var(--gold); font-style: italic; }
 .spinner { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--gold); animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .error { color: #e0a39a; }

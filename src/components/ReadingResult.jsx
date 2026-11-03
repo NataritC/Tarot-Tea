@@ -11,7 +11,7 @@ export default function ReadingResult({ question, spread, drawn, aiAvailable, sa
   const [ai, setAi] = useState({ status: savedAi ? 'done' : 'idle', text: savedAi || '' });
   const [note, setNote] = useState('');
 
-  async function askOracle() {
+  async function askDeepReading() {
     setAi({ status: 'loading', text: '' });
     try {
       const res = await fetch('/api/interpret', {
@@ -24,7 +24,7 @@ export default function ReadingResult({ question, spread, drawn, aiAvailable, sa
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'The oracle is unavailable.');
+      if (!res.ok) throw new Error(data.error || 'The deep reading is unavailable.');
       setAi({ status: 'done', text: data.text });
       onAiText?.(data.text);
     } catch (e) {
@@ -73,14 +73,14 @@ export default function ReadingResult({ question, spread, drawn, aiAvailable, sa
       <h3 className="section-title">Your Advice</h3>
       <div className="advice-box">{result.advice.map((a) => <p key={a}>{a}</p>)}</div>
 
-      <div className="oracle">
-        <h3 className="section-title">✦ The Oracle's Reading</h3>
+      <div className="deep-reading">
+        <h3 className="section-title">✦ Deep Tarot Reading</h3>
         {ai.status === 'done' && <div className="ai-text" dangerouslySetInnerHTML={{ __html: renderMarkdown(ai.text) }} />}
-        {ai.status === 'loading' && <div className="oracle-loading"><span className="spinner" /> The oracle is reading your cards…</div>}
+        {ai.status === 'loading' && <div className="deep-loading"><span className="spinner" /> The tarot reader is studying your cards…</div>}
         {ai.status === 'error' && <p className="error">{ai.text}</p>}
         {(ai.status === 'idle' || ai.status === 'error') && (
           aiAvailable
-            ? <button className="btn btn-gold" onClick={askOracle}>Ask the Oracle for a deep reading</button>
+            ? <button className="btn btn-gold" onClick={askDeepReading}>Get a Deep Tarot Reading</button>
             : <p className="muted small">AI readings weave every card and your question into one personal story. They turn on once the app is deployed with an API key.</p>
         )}
       </div>
