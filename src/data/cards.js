@@ -210,4 +210,4 @@ export const CARDS = [
 
 export { SUITS };
 export const cardImage = (id) => `${import.meta.env.BASE_URL}cards/${id}.webp`;
-export const CARD_BACK = `${import.meta.env.BASE_URL}cards/card-back.webp`;
+export const CARD_BACK = `${import.meta.env.BASE_URL}cards/card-back.svg`;

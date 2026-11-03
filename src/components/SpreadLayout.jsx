@@ -4,7 +4,7 @@ const CELL_H = 1.58; // slot height relative to slot width (card 1.28 + label)
 
 // Renders a spread's positions in its layout shape.
 // slots[i] = { card, reversed, revealed } or null (empty).
-export default function SpreadLayout({ spread, slots = [], activeIndex = -1, onSlotClick, compact = false, showLabels = true }) {
+export default function SpreadLayout({ spread, slots = [], activeIndex = -1, onSlotClick, compact = false, showLabels = true, maxVh = 72 }) {
   const cols = Math.max(...spread.positions.map((p) => p.x)) + 1;
   const rows = Math.max(...spread.positions.map((p) => p.y)) + 1;
   const aspect = cols / (rows * CELL_H);
@@ -13,7 +13,7 @@ export default function SpreadLayout({ spread, slots = [], activeIndex = -1, onS
   return (
     <div
       className={`spread-layout ${compact ? 'is-compact' : ''}`}
-      style={{ aspectRatio: aspect, maxWidth: `min(100%, ${cols * maxSlot}px, calc(${compact ? 40 : 72}vh * ${aspect}))` }}
+      style={{ aspectRatio: aspect, maxWidth: `min(100%, ${cols * maxSlot}px, calc(${compact ? 40 : maxVh}dvh * ${aspect}))` }}
     >
       {spread.positions.map((pos, i) => {
         const slot = slots[i];

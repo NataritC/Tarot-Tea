@@ -1,15 +1,18 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { cardImage, SUITS } from '../data/cards.js';
 
 export default function CardModal({ card, reversed = false, position, onClose }) {
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden'; // stop the page scrolling behind the popup
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
   }, [onClose]);
   if (!card) return null;
   const suit = card.suit && SUITS[card.suit];
-  return (
+  return createPortal(
     <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-label={card.name}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
@@ -41,6 +44,7 @@ export default function CardModal({ card, reversed = false, position, onClose })
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

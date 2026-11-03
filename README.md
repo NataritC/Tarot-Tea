@@ -24,4 +24,8 @@ The built-in readings work without any setup. The AI reading needs a deployment 
 **Never commit your API key**: this repo is public.
 
 ## Card images
-`public/cards/*.webp` were cut from the deck overview poster with `scripts/crop-cards.py`, so they are low resolution (~97px wide). For crisp cards, export each card at about 600×970px and save them with the same file names (e.g. `the-fool.webp`, `ace-of-cups.webp`, `card-back.webp`).
+- **Card back**: hand-drawn vector art (`public/cards/card-back.svg`), sharp at any size.
+- **Card faces** (`public/cards/*.webp`): cut from the deck overview poster and enlarged 4x with the Real-ESRGAN AI upscaler (`scripts/upscale-cards.py`). They are much sharper than before, but the source cards were only ~97px wide, so some fine detail is AI-reconstructed. For perfect quality, export each card at about 600x1000px and save it with the same file name (e.g. `the-fool.webp`, `ace-of-cups.webp`).
+
+## iPhone
+Open the site in Safari, tap **Share → Add to Home Screen**, and it runs full-screen like an app, with its own icon.

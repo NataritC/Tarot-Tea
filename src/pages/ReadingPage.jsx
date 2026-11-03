@@ -24,9 +24,16 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
   const [revealed, setRevealed] = useState([]);
   const [savedId, setSavedId] = useState(null);
   const aiText = useRef(null);
+  const fanRef = useRef(null);
   const spread = spreadId && getSpread(spreadId);
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [step]);
+
+  // Start the fanned deck centred so both ends can be reached by swiping.
+  useEffect(() => {
+    const fan = fanRef.current;
+    if (step === 'pick' && fan) fan.scrollLeft = (fan.scrollWidth - fan.clientWidth) / 2;
+  }, [step]);
 
   function chooseSpread(id) { setSpreadId(id); setStep('question'); }
 
@@ -157,7 +164,7 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
   // ---------- Steps: pick + reveal + reading ----------
   const nextPos = spread.positions[picked.length];
   return (
-    <div className="page fade-up">
+    <div className={`page fade-up ${step === 'pick' ? 'is-picking' : ''}`}>
       <header className="page-head">
         <p className="eyebrow">{step === 'pick' ? 'Step 3 of 4' : 'Step 4 of 4'} · {spread.name}</p>
         {step === 'pick' && nextPos && (
@@ -174,7 +181,7 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
           </>
         )}
         {allRevealed && <h1>Your Reading</h1>}
-        {question && step !== 'reveal' && <p className="reading-question">“{question}”</p>}
+        {question && step !== 'reveal' && <p className={`reading-question ${step === 'pick' ? 'hide-phone' : ''}`}>“{question}”</p>}
       </header>
 
       <div className="table-felt">
@@ -183,13 +190,14 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
           slots={slots}
           activeIndex={step === 'pick' ? picked.length : allRevealed ? -1 : revealed.length}
           onSlotClick={step === 'reveal' ? reveal : undefined}
+          maxVh={step === 'pick' ? 34 : 72}
         />
       </div>
 
       {step === 'pick' && (
         <div className="fan-wrap">
-          <p className="fan-hint">Scroll the deck ↔ and tap a card</p>
-          <div className="fan" role="list">
+          <p className="fan-hint">Swipe the deck ↔ and tap a card</p>
+          <div className="fan" role="list" ref={fanRef}>
             <div className="fan-inner" style={{ width: `${deck.length * 20 + 80}px` }}>
               {deck.map((d, i) => {
                 const mid = (deck.length - 1) / 2;

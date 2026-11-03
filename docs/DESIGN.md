@@ -40,6 +40,7 @@ The app must explain all of this to users in a **"How Tarot Works"** guide (and 
 - Platform: responsive website (React + Vite), deployable on Vercel.
 - Readings: built-in engine (`src/lib/interpret.js`) works offline: per-position meanings, question topic (love/work/money), yes/no leaning, patterns (Major count, dominant suit, reversals) and advice.
 - AI readings: `api/interpret.js` serverless function calls Claude; enabled only when `ANTHROPIC_API_KEY` is set on the server.
+- Mobile: iOS-style bottom tab bar, safe-area aware, Add to Home Screen (manifest + apple-touch-icon), bottom-sheet card popups.
 - Reversal chance: 35% per card. Journal and daily card are stored in localStorage.
 
 ## Known deck art issues (to fix in the artwork)
@@ -47,4 +48,4 @@ The app must explain all of this to users in a **"How Tarot Works"** guide (and 
 - Every Cups label renders the suit as "©CUPS"/"CCUPS"; Knight of Cups is labelled "KNIGHT of WANPS".
 - Wrong suit symbols: Page of Swords and Queen of Swords hold cups; King of Wands holds a sword; Six of Pentacles shows a goblet instead of coins.
 - Missing or wrong counts: Two, Three and Four of Cups show no cups; Five of Cups shows two spilled cups (traditionally 3 spilled + 2 standing); Eight of Pentacles shows 4 coins.
-- Card images in the app are cropped from the overview poster (low-res); replace with full-size exports.
+- Card faces in the app are AI-upscaled (Real-ESRGAN x4) crops of the overview poster; replace with full-size exports when available. The card back is a vector redraw (SVG).
