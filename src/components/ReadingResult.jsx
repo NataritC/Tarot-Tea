@@ -1,16 +1,37 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { interpret, summarize } from '../lib/interpret.js';
 import { renderMarkdown } from '../lib/markdown.js';
 import { cardImage } from '../data/cards.js';
 import CardModal from './CardModal.jsx';
 
 // Shows the full reading for a completed spread.
-export default function ReadingResult({ question, spread, drawn, aiAvailable, savedAi, onSave, saved, onAiText }) {
+export default function ReadingResult({ question, spread, drawn, aiAvailable, savedAi, savedAiSummary, autoAiSummary = false, onSave, saved, onAiText, onAiSummary }) {
   const result = useMemo(() => interpret({ question, spread, drawn }), [question, spread, drawn]);
   const summary = useMemo(() => summarize({ question, drawn, result }), [question, drawn, result]);
   const [detail, setDetail] = useState(null);
   const [ai, setAi] = useState({ status: savedAi ? 'done' : 'idle', text: savedAi || '' });
   const [note, setNote] = useState('');
+  const [aiSummary, setAiSummary] = useState({ status: savedAiSummary ? 'done' : 'idle', text: savedAiSummary || '' });
+
+  // When AI is set up, the tarot reader writes a summary tailored to this exact reading.
+  useEffect(() => {
+    if (!aiAvailable || !autoAiSummary || savedAiSummary) return;
+    let cancelled = false;
+    setAiSummary({ status: 'loading', text: '' });
+    fetch('/api/interpret', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mode: 'summary', question, spread: spread.name,
+        cards: drawn.map((d) => ({ position: d.position.name, positionMeaning: d.position.meaning, card: d.card.name, reversed: d.reversed })),
+      }),
+    })
+      .then(async (res) => { const data = await res.json(); if (!res.ok) throw new Error(data.error); return data.text; })
+      .then((text) => { if (!cancelled) { setAiSummary({ status: 'done', text }); onAiSummary?.(text); } })
+      .catch(() => { if (!cancelled) setAiSummary({ status: 'error', text: '' }); });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aiAvailable, autoAiSummary]);
 
   async function askDeepReading() {
     setAi({ status: 'loading', text: '' });
@@ -73,8 +94,21 @@ export default function ReadingResult({ question, spread, drawn, aiAvailable, sa
 
       <h3 className="section-title">Summary of Your Reading</h3>
       <div className="summary-box">
-        <p className="summary-story">{summary.story}</p>
-        <p className="summary-takeaway"><span className="eyebrow">In short</span>{summary.takeaway}</p>
+        {aiSummary.status === 'done' ? (
+          <>
+            <p className="summary-badge">✦ Written for this reading by the tarot reader</p>
+            <div className="summary-story" dangerouslySetInnerHTML={{ __html: renderMarkdown(aiSummary.text) }} />
+          </>
+        ) : (
+          <>
+            {aiSummary.status === 'loading' && <p className="summary-badge"><span className="spinner" /> The tarot reader is writing your summary…</p>}
+            <p className="summary-story">{summary.story}</p>
+            {summary.insights.length > 0 && (
+              <ul className="summary-insights">{summary.insights.map((t) => <li key={t}>{t}</li>)}</ul>
+            )}
+            <p className="summary-takeaway"><span className="eyebrow">In short</span>{summary.takeaway}</p>
+          </>
+        )}
       </div>
 
       <h3 className="section-title">Your Advice</h3>

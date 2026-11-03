@@ -32,7 +32,7 @@ export default function JournalPage({ aiAvailable, navigate }) {
           <SpreadLayout spread={spread} slots={drawn.map((d) => ({ ...d, revealed: true }))} />
         </div>
         {open.note && <blockquote className="journal-note">{open.note}</blockquote>}
-        <ReadingResult question={open.question} spread={spread} drawn={drawn} aiAvailable={aiAvailable} savedAi={open.ai} />
+        <ReadingResult question={open.question} spread={spread} drawn={drawn} aiAvailable={aiAvailable} savedAi={open.ai} savedAiSummary={open.aiSummary} />
         {open.followUps?.length > 0 && (
           <section className="next-steps">
             <h3 className="section-title">Follow-up Questions</h3>

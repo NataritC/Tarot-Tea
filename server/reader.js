@@ -27,6 +27,15 @@ Answer the new follow-up in plain Markdown, 2-4 short paragraphs, under 250 word
 No headings. Be specific, never generic. Stay honest and compassionate; the future is not fixed.
 Do not give medical, legal or financial instructions; suggest a professional for those.`;
 
+const SUMMARY_SYSTEM = `You are the reader of the Noctis Tarot, a warm, wise and honest tarot reader.
+Write the SUMMARY section of a tarot reading, tailored to this querent's exact question and situation.
+- 120-180 words, one or two paragraphs of plain prose. No headings, no bullet points, no Markdown.
+- Retell the story of the cards in draw order through their positions, and say what it means for this question specifically.
+- Name the key turning point or the card that matters most, and how the cards relate to each other.
+- Finish with one sentence that starts with "In short:" and gives the overall answer (for yes/no questions, a clear leaning).
+- Do not write a list of advice; the advice section comes after this summary.
+Be specific, never generic. Stay honest and compassionate; the future is not fixed.`;
+
 const clean = (s, max) => String(s ?? '').slice(0, max);
 const cardLine = (c) => `${clean(c.card, 60)}${c.reversed ? ' (reversed)' : ' (upright)'}`;
 
@@ -37,7 +46,7 @@ export async function handleReading(method, payload, apiKey) {
   if (method !== 'POST') return reply(405, { error: 'Method not allowed' });
   if (!apiKey) return reply(503, { error: 'AI readings are not configured.' });
 
-  const { question, spread, cards, followUp, history } = payload || {};
+  const { question, spread, cards, followUp, history, mode } = payload || {};
   if (!Array.isArray(cards) || cards.length < 1 || cards.length > 10) {
     return reply(400, { error: 'Invalid cards.' });
   }
@@ -49,7 +58,7 @@ Spread: ${clean(spread, 60)}
 Cards in draw order:
 ${lines.join('\n')}`;
 
-  let system = SYSTEM;
+  let system = mode === 'summary' ? SUMMARY_SYSTEM : SYSTEM;
   let content = prompt;
   if (followUp) {
     if (!followUp.card || !followUp.question) return reply(400, { error: 'Invalid follow-up.' });

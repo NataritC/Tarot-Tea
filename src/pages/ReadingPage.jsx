@@ -27,6 +27,7 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
   const [savedId, setSavedId] = useState(null);
   const [followUps, setFollowUps] = useState([]); // [{ question, card, reversed, deckIndex, ai }]
   const aiText = useRef(null);
+  const [aiSummary, setAiSummary] = useState(null);
   const fanRef = useRef(null);
   const spread = spreadId && getSpread(spreadId);
 
@@ -42,7 +43,7 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
 
   function startShuffle() {
     setDeck(shuffleDeck(settings.reversals));
-    setPicked([]); setRevealed([]); setSavedId(null); setFollowUps([]); aiText.current = null;
+    setPicked([]); setRevealed([]); setSavedId(null); setFollowUps([]); setAiSummary(null); aiText.current = null;
     setStep('shuffle');
     setTimeout(() => setStep('pick'), 2200);
   }
@@ -82,9 +83,9 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
   useEffect(() => {
     if (!savedId) return;
     const entries = loadJournal();
-    const next = entries.map((e) => (e.id === savedId ? { ...e, followUps: followUpsForJournal(followUps) } : e));
+    const next = entries.map((e) => (e.id === savedId ? { ...e, followUps: followUpsForJournal(followUps), aiSummary: aiSummary || e.aiSummary || null } : e));
     saveJournal(next);
-  }, [followUps, savedId]);
+  }, [followUps, savedId, aiSummary]);
 
   const newReading = () => { setQuestion(''); setFollowUps([]); setStep('spread'); };
 
@@ -98,6 +99,7 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
       note: (note || '').trim(),
       ai: ai || aiText.current,
       followUps: followUpsForJournal(followUps),
+      aiSummary,
     };
     saveJournal([entry, ...loadJournal()]);
     setSavedId(entry.id);
@@ -291,6 +293,8 @@ export default function ReadingPage({ initialSpread, aiAvailable, navigate }) {
           onSave={save}
           saved={Boolean(savedId)}
           onAiText={(t) => { aiText.current = t; }}
+          autoAiSummary
+          onAiSummary={setAiSummary}
         />
       )}
 

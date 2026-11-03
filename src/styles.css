@@ -442,3 +442,11 @@ button.tcard { cursor: pointer; }
 .summary-story { font-size: 1.1rem; line-height: 1.65; }
 .summary-takeaway { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); font-style: italic; color: var(--gold-hi); }
 .summary-takeaway .eyebrow { display: block; font-style: normal; margin-bottom: 4px; }
+
+.summary-insights { margin: 0 0 14px; padding-left: 1.2em; }
+.summary-insights li { margin-bottom: 6px; color: #e3cdb8; }
+.summary-insights li::marker { color: var(--gold); content: '✦  '; }
+.summary-badge { display: flex; align-items: center; gap: 10px; font: 600 0.72rem var(--display); letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.summary-badge .spinner { width: 14px; height: 14px; }
+.summary-story p { font-size: 1.1rem; line-height: 1.65; }
+.summary-story p:last-child { margin-bottom: 0; }
