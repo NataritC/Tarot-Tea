@@ -38,9 +38,9 @@ The app must explain all of this to users in a **"How Tarot Works"** guide (and 
 
 ## Decisions
 - Deck: **Noctis Tarot** (owner's deck). Style follows the deck: black, crimson and gold; Cinzel + Cormorant Garamond.
-- Platform: responsive website (React + Vite), deployable on Vercel.
+- Platform: responsive website (React + Vite). Hosting: Cloudflare Pages (primary, `functions/api/interpret.js`) or Vercel (`api/interpret.js`); both adapters call `server/reader.js`.
 - Readings: built-in engine (`src/lib/interpret.js`) works offline: per-position meanings, question topic (love/work/money), yes/no leaning, patterns (Major count, dominant suit, reversals) and advice.
-- AI readings: `api/interpret.js` serverless function calls Claude; enabled only when `ANTHROPIC_API_KEY` is set on the server.
+- AI readings: serverless function calls Claude; enabled only when `ANTHROPIC_API_KEY` is set on the server.
 - Mobile: iOS-style bottom tab bar, safe-area aware, Add to Home Screen (manifest + apple-touch-icon), bottom-sheet card popups.
 - Reversal chance: 35% per card. Journal and daily card are stored in localStorage.
 

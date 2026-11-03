@@ -16,12 +16,19 @@ npm run dev
 ```
 The built-in readings work without any setup. The AI reading needs a deployment (below).
 
-## Deploy (Vercel, with AI readings)
-1. Import this repo at https://vercel.com/new (it auto-detects Vite and the `api/` folder).
-2. In **Project → Settings → Environment Variables**, add `ANTHROPIC_API_KEY` (get one at https://console.anthropic.com).
-3. Deploy. The "Get a Deep Tarot Reading" button appears automatically when the key is set.
+## Deploy on Cloudflare Pages (recommended)
+1. Log in at https://dash.cloudflare.com, open **Workers & Pages → Create → Pages → Connect to Git**, and pick this repo.
+2. Build settings: **Build command** `npm run build`, **Build output directory** `dist`.
+3. **Save and Deploy**. The site goes live at `https://<project>.pages.dev` and redeploys on every push to `main`.
+4. For AI readings: **Settings → Variables and Secrets → Add**, type **Secret**, name `ANTHROPIC_API_KEY` (key from https://console.anthropic.com), then redeploy.
 
-**Never commit your API key**: this repo is public.
+The AI endpoint is `functions/api/interpret.js` (a Pages Function). Config lives in `wrangler.toml`.
+Test locally with Cloudflare's runtime: `npm run build && npx wrangler pages dev dist` (put a test key in `.dev.vars`, which is gitignored).
+
+## Deploy on Vercel (alternative)
+Import the repo at https://vercel.com/new and add `ANTHROPIC_API_KEY` under **Settings → Environment Variables**. The adapter is `api/interpret.js`.
+
+Both hosts share the same reading logic in `server/reader.js`. **Never commit your API key**: this repo is public.
 
 ## Card images
 - **Card back**: hand-drawn vector art (`public/cards/card-back.svg`), sharp at any size.
