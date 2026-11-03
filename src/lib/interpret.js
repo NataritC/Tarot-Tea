@@ -321,7 +321,10 @@ export function summarize({ question, drawn, result }) {
       `Your answer: ${v === 'maybe' ? 'not settled yet' : v}.`,
     ], seed));
   }
-  parts.push(result.mood);
+  // The mood is already shown at the top of the reading, so here focus on where it leads.
+  const outName = `${outcome.card.name}${outcome.reversed ? ' reversed' : ''}`;
+  if (topic && !outcome.reversed) parts.push(`With ${outName} as the outcome, for ${TOPIC_LABEL[topic]} this points to ${lowerFirst(outcome.card.topics[topic]).replace(/\.$/, '')}.`);
+  else parts.push(`Everything leads to ${outName}.`);
   const adviceSource = result.adviceCard || outcome;
   parts.push(`Above all: ${lowerFirst(adviceSource.card.advice)}`);
 

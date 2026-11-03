@@ -7,6 +7,10 @@ main = "worker/index.js"
 compatibility_date = "2025-09-01"
 compatibility_flags = ["nodejs_compat"]
 
+# Free AI readings through Cloudflare Workers AI (Claude is used instead when ANTHROPIC_API_KEY is set).
+[ai]
+binding = "AI"
+
 [build]
 command = "npm run build"
 

@@ -10,7 +10,7 @@ export default {
       if (request.method === 'POST') {
         try { payload = await request.json(); } catch { payload = null; }
       }
-      const { status, body } = await handleReading(request.method, payload, env.ANTHROPIC_API_KEY);
+      const { status, body } = await handleReading(request.method, payload, { apiKey: env.ANTHROPIC_API_KEY, ai: env.AI });
       return Response.json(body, { status });
     }
     return env.ASSETS.fetch(request);

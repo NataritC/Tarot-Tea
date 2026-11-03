@@ -19,16 +19,19 @@ The built-in readings work without any setup. The AI reading needs a deployment 
 ## Deploy on Cloudflare (recommended)
 Works whether Cloudflare creates a **Worker** or a **Pages** project. Node 22 is pinned in `.node-version`.
 
+**AI readings are free on Cloudflare**: the app uses Cloudflare Workers AI (free daily allowance) through a binding named `AI`, and switches to Claude automatically when an `ANTHROPIC_API_KEY` secret is added (better readings, a few cents each).
+
 **Worker (the default in the current dashboard):** Workers & Pages → Create → Import a repository → pick this repo.
 - Build command: `npm run build` (or leave empty; `wrangler.toml` runs it)
 - Deploy command: `npx wrangler deploy`
 - API key: Settings → Variables and Secrets → Add → Secret `ANTHROPIC_API_KEY`
-- Entry point `worker/index.js` serves `/api/interpret`; the site comes from `dist/`.
+- Entry point `worker/index.js` serves `/api/interpret`; the site comes from `dist/`. The Workers AI binding comes from `wrangler.toml`.
 
 **Pages:** Workers & Pages → Create → Pages → Connect to Git.
 - Build command `npm run build`, output directory `dist`
 - API key: Settings → Variables and Secrets → Secret `ANTHROPIC_API_KEY`
 - `/api/interpret` is served by `functions/api/interpret.js`.
+- For free AI readings: Settings → Bindings → Add → **Workers AI**, variable name `AI`, then redeploy.
 
 Test locally in Cloudflare's runtime: `npx wrangler dev` (Worker) or `npm run build && npx wrangler pages dev dist` (Pages). Put a test key in `.dev.vars` (gitignored).
 
