@@ -39,7 +39,7 @@ The app must explain all of this to users in a **"How Tarot Works"** guide (and 
 ## Decisions
 - Logo: **Moon Steep** (teacup whose steam becomes a crescent moon), `public/brand/logo.svg`; favicon `public/brand/favicon.svg`; app icons `public/icon-*.png`, `public/apple-touch-icon.png`.
 - Deck: **Noctis Tarot** (owner's deck). Style follows the deck: black, crimson and gold; Cinzel + Cormorant Garamond.
-- Platform: responsive website (React + Vite). Hosting: Cloudflare Pages (primary, `functions/api/interpret.js`) or Vercel (`api/interpret.js`); both adapters call `server/reader.js`.
+- Platform: responsive website (React + Vite). Hosting: Cloudflare as a Worker (`worker/index.js` + `wrangler.toml`) or Pages (`functions/api/interpret.js`), Node 22 or Vercel (`api/interpret.js`); both adapters call `server/reader.js`.
 - Readings: built-in engine (`src/lib/interpret.js`) works offline: per-position meanings, question topic (love/work/money), yes/no leaning, patterns (Major count, dominant suit, reversals) and advice.
 - AI readings: serverless function calls Claude; enabled only when `ANTHROPIC_API_KEY` is set on the server.
 - Mobile: iOS-style bottom tab bar, safe-area aware, Add to Home Screen (manifest + apple-touch-icon), bottom-sheet card popups.

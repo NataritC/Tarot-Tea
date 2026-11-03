@@ -16,14 +16,21 @@ npm run dev
 ```
 The built-in readings work without any setup. The AI reading needs a deployment (below).
 
-## Deploy on Cloudflare Pages (recommended)
-1. Log in at https://dash.cloudflare.com, open **Workers & Pages → Create → Pages → Connect to Git**, and pick this repo.
-2. Build settings: **Build command** `npm run build`, **Build output directory** `dist`.
-3. **Save and Deploy**. The site goes live at `https://<project>.pages.dev` and redeploys on every push to `main`.
-4. For AI readings: **Settings → Variables and Secrets → Add**, type **Secret**, name `ANTHROPIC_API_KEY` (key from https://console.anthropic.com), then redeploy.
+## Deploy on Cloudflare (recommended)
+Works whether Cloudflare creates a **Worker** or a **Pages** project. Node 22 is pinned in `.node-version`.
 
-The AI endpoint is `functions/api/interpret.js` (a Pages Function). Config lives in `wrangler.toml`.
-Test locally with Cloudflare's runtime: `npm run build && npx wrangler pages dev dist` (put a test key in `.dev.vars`, which is gitignored).
+**Worker (the default in the current dashboard):** Workers & Pages → Create → Import a repository → pick this repo.
+- Build command: `npm run build` (or leave empty; `wrangler.toml` runs it)
+- Deploy command: `npx wrangler deploy`
+- API key: Settings → Variables and Secrets → Add → Secret `ANTHROPIC_API_KEY`
+- Entry point `worker/index.js` serves `/api/interpret`; the site comes from `dist/`.
+
+**Pages:** Workers & Pages → Create → Pages → Connect to Git.
+- Build command `npm run build`, output directory `dist`
+- API key: Settings → Variables and Secrets → Secret `ANTHROPIC_API_KEY`
+- `/api/interpret` is served by `functions/api/interpret.js`.
+
+Test locally in Cloudflare's runtime: `npx wrangler dev` (Worker) or `npm run build && npx wrangler pages dev dist` (Pages). Put a test key in `.dev.vars` (gitignored).
 
 ## Deploy on Vercel (alternative)
 Import the repo at https://vercel.com/new and add `ANTHROPIC_API_KEY` under **Settings → Environment Variables**. The adapter is `api/interpret.js`.

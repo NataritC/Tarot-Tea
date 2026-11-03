@@ -1,5 +1,16 @@
-# Cloudflare Pages configuration
+# Cloudflare configuration.
+# Works as a Worker with static assets (npx wrangler deploy builds and uploads everything).
+# If the project is a Cloudflare *Pages* project instead, Pages ignores this file and uses
+# the dashboard build settings (npm run build -> dist) plus the functions/ folder.
 name = "tarot-tea"
-pages_build_output_dir = "dist"
+main = "worker/index.js"
 compatibility_date = "2025-09-01"
 compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "npm run build"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
